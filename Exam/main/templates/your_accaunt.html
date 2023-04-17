@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 style="text-align: center;">Общий баланс</h1>
+<p style="font-size: 30px"><b>{{ sum_in_btc }} BTC</b> ≈ ${{ sum_in_usdt }}</p>
+<br>
+    <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+          {% for i in name_coin %}
+        <td>{{ i }}</td>
+        {% endfor %}
+      </tr>
+    </thead>
+      <thead>
+      <tr>
+        <th scope="col">Amount</th>
+           {% for i in col_vo_coin %}
+        <td>{{ i }}</td>
+        {% endfor %}
+      </tr>
+    </thead>
+      <thead>
+      <tr>
+        <th scope="col">Price</th>
+          {% for i in price %}
+        <td>{{ i }}</td>
+        {% endfor %}
+      </tr>
+    </thead>
+      <thead>
+      <tr>
+        <th scope="col">24H Change</th>
+          {% for i in changes %}
+          {% if i < 0 %}
+          <td style="color: red;">{{ i }} %</td>
+          {% else %}
+          <td style="color: green ;">+ {{ i }} %</td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    </thead>
+  </table>
+{% endblock %}

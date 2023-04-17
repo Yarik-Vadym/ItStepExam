@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .form-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .form-container {
+      display: flex;
+      justify-content: space-between;
+      width: 80%;
+    }
+
+    form {
+      width: 45%;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    input[type="text"] {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 16px;
+      letter-spacing: 1px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+    }
+
+</style>
+<div class="container">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(function() {
+      function update_price_change() {
+        $.ajax({
+          url: "{% url 'get_price_change' %}",
+          dataType: "json",
+          success: function(data) {
+            $('#price').text('$' + data.price);
+            if (data.change >= 0) {
+              $('#change').html('<span style="color: green;">+' + data.change + '%</span>');
+            } else {
+              $('#change').html('<span style="color: red;">' + data.change + '%</span>');
+            }
+          }
+        });
+      }
+
+      setInterval(update_price_change, 3000); // update every 5 seconds
+    });
+    </script>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <span>{{ symbol }}</span>
+    </div>
+    <div class="navbar-price" id="price">
+      ${{ price }}
+    </div>
+    <div class="navbar-change">
+      {% if change > 0 %}
+      <span style="color: green;" id="change">+{{ change }}%</span>
+      {% else %}
+      <span style="color: red;" id="change">{{ change }}%</span>
+      {% endif %}
+    </div>
+    <form class="search-form" style="width: 20%;" method="post">
+      {% csrf_token %}
+      {{ form.name_coin }}
+    </form>
+  </nav>
+  <div class="chart-container">
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript">
+          new TradingView.widget(
+            {
+              "width": 1050,
+              "height": 600,
+              "symbol": "BINANCE:{{ symbol }}",
+              "interval": "D",
+              "timezone": "Etc/UTC",
+              "theme": "light",
+              "style": "1",
+              "locale": "ru",
+              "toolbar_bg": "#f1f3f6",
+              "enable_publishing": false,
+              "allow_symbol_change": true,
+              "container_id": "tradingview_9d57b"
+            }
+          );
+    </script>
+    <div id="tradingview_9d57b"></div>
+  </div>
+  <div class="form-wrapper">
+    <div class="form-container">
+      <form class="buy-form">
+        <div class="form-group">
+          <span>Avbl</span> <b>{{ asset_balance_currency }} {{ currency }}</b>
+        </div>
+        <div class="form-group">
+          <input placeholder = "Price ({{ currency }})" type="text" id="buy-price" name="buy-price">
+        </div>
+        <div class="form-group">
+          <input placeholder="Amount ({{ asset }})" type="text" id="buy-amount" name="buy-amount">
+        </div>
+        <div class="form-group">
+          <input placeholder="Total ({{ currency }})" type="text" id="buy-total" name="buy-total" readonly>
+        </div>
+        <button type="submit" class="btn btn-success">Buy {{ asset }}</button>
+      </form>
+      <form class="sell-form">
+        <div class="form-group">
+          <span>Avbl</span> <b>{{ asset_balance_coin }} {{ asset }}</b>
+        </div>
+        <div class="form-group">
+          <input placeholder="Price ({{ currency }})" type="text" id="sell-price" name="sell-price">
+        </div>
+        <div class="form-group">
+          <input placeholder="Amount ({{ asset }})" type="text" id="sell-amount" name="sell-amount">
+        </div>
+        <div class="form-group">
+          <input placeholder="Total ({{ currency }})" type="text" id="sell-total" name="sell-total" readonly>
+        </div>
+        <button type="submit" class="btn btn-danger">Sell {{ asset }}</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

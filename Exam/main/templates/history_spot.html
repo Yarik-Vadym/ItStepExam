@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<form role="search" method="post">
+    {% csrf_token %}
+{{ form.name_coin }} {{ form.choice_status }} <button type="submit" class="btn btn-dark">Найти</button>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Pair</th>
+      <th scope="col">Side</th>
+      <th scope="col">Price</th>
+      <th scope="col">Amount</th>
+      <th scope="col">Total</th>
+        <th scope="col">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for i in info %}
+  {% if i.status == 'CANCELED' %}
+    <tr style="color: gray;">
+      <td>{{ i.symbol }}</td>
+      {% if i.side == 'BUY' %}
+      <td style="color: green;">{{ i.side }}</td>
+      {% else %}
+      <td style="color: red;">{{ i.side }}</td>
+      {% endif %}
+      <td>{{ i.price }}</td>
+      <td>{{ i.origQty }}</td>
+      <td>{{ i.cummulativeQuoteQty }}</td>
+      <td>{{ i.status }}</td>
+    </tr>
+  {% else %}
+  <tr>
+      <td>{{ i.symbol }}</td>
+      {% if i.side == 'BUY' %}
+      <td style="color: green;">{{ i.side }}</td>
+      {% else %}
+      <td style="color: red;">{{ i.side }}</td>
+      {% endif %}
+      <td>{{ i.price }}</td>
+      <td>{{ i.origQty }}</td>
+      <td>{{ i.cummulativeQuoteQty }}</td>
+      <td>{{ i.status }}</td>
+    </tr>
+  {% endif %}
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
