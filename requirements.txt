@@ -1,0 +1,10 @@
+django
+python-binance
+django-debug-toolbar
+django-tinymce
+fontawesomefree
+django-crispy-forms
+django-recaptcha
+pillow
+six
+djangorestframework

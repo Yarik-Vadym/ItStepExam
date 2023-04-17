@@ -1,0 +1,82 @@
+.window {
+    margin: 10px 25px;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.card {
+    margin: 15px 10px;
+    max-width: 900px;
+    min-height: 360px;
+}
+
+.coin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0px;
+    border-top: 1px solid #eff2f5;
+}
+
+
+.coin div {
+    height: 100%;
+    text-align: center;
+    flex: 1;
+}
+
+body {
+    height: 100%;
+}
+
+.content {
+    min-height: calc(100vh - 129px);
+}
+
+.footer {
+    margin: 50px 0px 0px 0px;
+}
+
+.blog-card {
+    max-width: 600px;
+    margin: auto;
+    width: 50%;
+    border: 1px solid black;
+}
+
+a {
+  text-decoration: none;
+}
+
+.create_blog {
+    max-width: 700px;
+    margin: auto;
+}
+
+.img_blog_content {
+        max-width: 80%;
+}
+
+.container_img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-img-top {
+    max-height: 350px;
+    width: 100%;
+}
+
+.last_card {
+    width: 100%;
+    border: 1px solid black;
+    margin: 10px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% for i in data_blog %}
+<a href="{{ i.get_absolute_url }}">
+    <div class="card mb-3 blog-card text-center ">
+        <img src="{{ i.img_path.url }}"
+             class="card-img-top" alt="..." height="350">
+        <div class="card-body">
+            <h5 class="card-title">{{ i.title }}</h5>
+            <p class="card-text">{{ i.content|truncatechars:50 }}</p>
+            <p class="card-text"><small class="text-muted">Last updated {{ i.updated_at }}</small></p>
+        </div>
+    </div>
+</a>
+{% endfor %}
+{% endblock %}
