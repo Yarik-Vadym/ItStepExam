@@ -277,7 +277,6 @@ def spot(request):
             print(buy_limit)
             return redirect('account')
         elif sell_form.is_valid():
-            print(1)
             your_models = User.objects.get(username=request.user.username)
             api_key = your_models.first_name
             secret_key = your_models.last_name
@@ -287,8 +286,8 @@ def spot(request):
                 side='SELL',
                 type='LIMIT',
                 timeInForce='GTC',
-                quantity=sell_form.cleaned_data['amount'],
-                price=sell_form.cleaned_data['price'])
+                quantity=sell_form.cleaned_data['amount_sell'],
+                price=sell_form.cleaned_data['price_sell'])
             print(sell_limit)
             return redirect('account')
         else:
@@ -356,8 +355,8 @@ def spot_coin(request):
                 side='SELL',
                 type='LIMIT',
                 timeInForce='GTC',
-                quantity=sell_form.cleaned_data['amount'],
-                price=sell_form.cleaned_data['price'])
+                quantity=sell_form.cleaned_data['amount_sell'],
+                price=sell_form.cleaned_data['price_sell'])
             print(sell_limit)
             return redirect('account')
         else:

@@ -81,13 +81,13 @@ class SELLForm(forms.Form):
     def __init__(self, *args, **kwargs):
         initial_price = kwargs.pop('initial_price', None)
         super(SELLForm, self).__init__(*args, **kwargs)
-        self.fields['price'] = forms.CharField(widget=forms.TextInput(attrs={
+        self.fields['price_sell'] = forms.CharField(widget=forms.TextInput(attrs={
             'type': 'text',
             'id': 'sell-price',
             'name': 'sell-price',
             'value': initial_price
         }))
-        self.fields['amount'] = forms.CharField(widget=forms.TextInput(attrs={
+        self.fields['amount_sell'] = forms.CharField(widget=forms.TextInput(attrs={
             'type': 'text',
             'id': 'sell-amount',
             'name': 'sell-amount'
