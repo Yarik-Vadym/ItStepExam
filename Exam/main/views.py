@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import UserRegisterForm, UserLoginForm, NameCoinForm, SearchCoinForm
+from .forms import UserRegisterForm, UserLoginForm, NameCoinForm, SearchCoinForm, BUYForm, SELLForm
 from .models import FilterModel
 from binance.client import Client
 from django.contrib.auth import login, get_user_model
@@ -175,7 +175,7 @@ def name_coin(request):
     if request.method == 'POST':
         form = NameCoinForm(request.POST)
         if form.is_valid():
-            name_coin = form.cleaned_data['name_coin']
+            name_coin = form.cleaned_data['name_coin'].upper()
             choice_status = form.cleaned_data['choice_status']
             FilterModel.objects.create(name_coin=name_coin, choice_status=choice_status)
             return redirect('history_spot')
@@ -191,7 +191,7 @@ def history_spot(request):
     if request.method == 'POST':
         form = NameCoinForm(request.POST)
         if form.is_valid():
-            name_coin = form.cleaned_data['name_coin']
+            name_coin = form.cleaned_data['name_coin'].upper()
             choice_status = form.cleaned_data['choice_status']
             FilterModel.objects.create(name_coin=name_coin, choice_status=choice_status)
             return redirect('history_spot')
@@ -254,16 +254,54 @@ def spot(request):
     name = 'BTCUSDT'
     if request.method == 'POST':
         form = SearchCoinForm(request.POST)
+        buy_form = BUYForm(request.POST)
+        sell_form = SELLForm(request.POST)
         if form.is_valid():
-            name_coin = form.cleaned_data['name_coin']
+            name_coin = form.cleaned_data['name_coin'].upper()
             response = redirect('spot_coin')
             response.set_cookie('name', name_coin)
             response.set_cookie('is_first', False)
             return response
+        elif buy_form.is_valid():
+            your_models = User.objects.get(username=request.user.username)
+            api_key = your_models.first_name
+            secret_key = your_models.last_name
+            client = Client(api_key, secret_key)
+            buy_limit = client.create_order(
+                symbol=name,
+                side='BUY',
+                type='LIMIT',
+                timeInForce='GTC',
+                quantity=buy_form.cleaned_data['amount'],
+                price=buy_form.cleaned_data['price'])
+            print(buy_limit)
+            return redirect('account')
+        elif sell_form.is_valid():
+            print(1)
+            your_models = User.objects.get(username=request.user.username)
+            api_key = your_models.first_name
+            secret_key = your_models.last_name
+            client = Client(api_key, secret_key)
+            sell_limit = client.create_order(
+                symbol=name,
+                side='SELL',
+                type='LIMIT',
+                timeInForce='GTC',
+                quantity=sell_form.cleaned_data['amount'],
+                price=sell_form.cleaned_data['price'])
+            print(sell_limit)
+            return redirect('account')
         else:
-            for error in list(form.errors.values()):
+            for error in list(sell_form.errors.values()):
                 messages.error(request, error)
     else:
+        your_models = User.objects.get(username=request.user.username)
+        api_key = your_models.first_name
+        secret_key = your_models.last_name
+        client = Client(api_key, secret_key)
+        info = client.get_ticker(symbol=name)
+        buy_form = BUYForm(initial_price=info['lastPrice'])
+        sell_form = SELLForm(initial_price=info['lastPrice'])
         form = SearchCoinForm()
     your_models = User.objects.get(username=request.user.username)
     api_key = your_models.first_name
@@ -278,7 +316,7 @@ def spot(request):
                                                'asset': asset['baseAsset'], 'form': form,
                                                'currency': asset['quoteAsset'],
                                                'asset_balance_currency': asset_balance_currency['free'],
-                                               'asset_balance_coin': asset_balance_coin['free']})
+                                               'asset_balance_coin': asset_balance_coin['free'], 'buy_form': buy_form, 'sell_form': sell_form})
     responce.set_cookie('is_first', True)
     return responce
 
@@ -286,16 +324,53 @@ def spot(request):
 def spot_coin(request):
     if request.method == 'POST':
         form = SearchCoinForm(request.POST)
+        buy_form = BUYForm(request.POST)
+        sell_form = SELLForm(request.POST)
         if form.is_valid():
-            name_coin = form.cleaned_data['name_coin']
+            name_coin = form.cleaned_data['name_coin'].upper()
             response = redirect('spot_coin')
             response.set_cookie('name', name_coin)
             response.set_cookie('is_first', False)
             return response
+        elif buy_form.is_valid():
+            your_models = User.objects.get(username=request.user.username)
+            api_key = your_models.first_name
+            secret_key = your_models.last_name
+            client = Client(api_key, secret_key)
+            buy_limit = client.create_order(
+                symbol=request.COOKIES['name'],
+                side='BUY',
+                type='LIMIT',
+                timeInForce='GTC',
+                quantity=buy_form.cleaned_data['amount'],
+                price=buy_form.cleaned_data['price'])
+            print(buy_limit)
+            return redirect('account')
+        elif sell_form.is_valid():
+            your_models = User.objects.get(username=request.user.username)
+            api_key = your_models.first_name
+            secret_key = your_models.last_name
+            client = Client(api_key, secret_key)
+            sell_limit = client.create_order(
+                symbol=request.COOKIES['name'],
+                side='SELL',
+                type='LIMIT',
+                timeInForce='GTC',
+                quantity=sell_form.cleaned_data['amount'],
+                price=sell_form.cleaned_data['price'])
+            print(sell_limit)
+            return redirect('account')
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
     else:
+        your_models = User.objects.get(username=request.user.username)
+        api_key = your_models.first_name
+        secret_key = your_models.last_name
+        client = Client(api_key, secret_key)
+        info = client.get_ticker(symbol=request.COOKIES['name'])
+        buy_form = BUYForm(initial_price=info['lastPrice'])
+        sell_form = SELLForm(initial_price=info['lastPrice'])
         form = SearchCoinForm()
     your_models = User.objects.get(username=request.user.username)
     api_key = your_models.first_name
@@ -310,4 +385,4 @@ def spot_coin(request):
                                                'asset': asset['baseAsset'], 'form': form,
                                                'currency': asset['quoteAsset'],
                                                'asset_balance_currency': asset_balance_currency['free'],
-                                               'asset_balance_coin': asset_balance_coin['free']})
+                                               'asset_balance_coin': asset_balance_coin['free'], 'buy_form': buy_form, 'sell_form': sell_form})

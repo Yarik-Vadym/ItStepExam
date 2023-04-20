@@ -57,7 +57,7 @@ def home(request):
     if request.method == 'POST':
         form = SearchMainPageForm(request.POST)
         if form.is_valid():
-            name_coin = form.cleaned_data['name_coin']
+            name_coin = form.cleaned_data['name_coin'].upper()
             response = redirect('spot_coin')
             response.set_cookie('name', name_coin)
             response.set_cookie('is_first', False)

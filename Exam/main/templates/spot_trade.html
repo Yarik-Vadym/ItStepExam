@@ -107,33 +107,33 @@
   </div>
   <div class="form-wrapper">
     <div class="form-container">
-      <form class="buy-form">
+      <form class="buy-form" method="post">
+        {% csrf_token %}
         <div class="form-group">
           <span>Avbl</span> <b>{{ asset_balance_currency }} {{ currency }}</b>
         </div>
         <div class="form-group">
-          <input placeholder = "Price ({{ currency }})" type="text" id="buy-price" name="buy-price">
+          <label>Price ({{ currency }})</label>
+          {{ buy_form.price }}
         </div>
         <div class="form-group">
-          <input placeholder="Amount ({{ asset }})" type="text" id="buy-amount" name="buy-amount">
-        </div>
-        <div class="form-group">
-          <input placeholder="Total ({{ currency }})" type="text" id="buy-total" name="buy-total" readonly>
+          <label>Amount ({{ asset }})</label>
+          {{ buy_form.amount }}
         </div>
         <button type="submit" class="btn btn-success">Buy {{ asset }}</button>
       </form>
-      <form class="sell-form">
+      <form class="sell-form" method="post">
+        {% csrf_token %}
         <div class="form-group">
           <span>Avbl</span> <b>{{ asset_balance_coin }} {{ asset }}</b>
         </div>
         <div class="form-group">
-          <input placeholder="Price ({{ currency }})" type="text" id="sell-price" name="sell-price">
+          <label>Price ({{ currency }})</label>
+          {{ sell_form.price }}
         </div>
         <div class="form-group">
-          <input placeholder="Amount ({{ asset }})" type="text" id="sell-amount" name="sell-amount">
-        </div>
-        <div class="form-group">
-          <input placeholder="Total ({{ currency }})" type="text" id="sell-total" name="sell-total" readonly>
+          <label>Amount ({{ asset }})</label>
+          {{ sell_form.amount }}
         </div>
         <button type="submit" class="btn btn-danger">Sell {{ asset }}</button>
       </form>
