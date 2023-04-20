@@ -1,5 +1,5 @@
 """
-URL configuration for Exam project.
+URL configuration for exchange project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -17,7 +17,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
-from .settings import MEDIA_URL, MEDIA_ROOT
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +24,4 @@ urlpatterns = [
     path('', include('application.urls')),
     path('blog/', include('blog.urls')),
     path('wallet/', include('main.urls')),
-] + static(MEDIA_URL, document_root=MEDIA_ROOT)
+]
